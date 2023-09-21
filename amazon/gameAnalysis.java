@@ -1,6 +1,16 @@
+
+
 import java.util.*;
 
 public class gameAnalysis {
+    public static void main(String[] args) {
+        int[][] averageStanding = getAverageStanding(3, new int[][]{{1, 1, 100}, {1, 2, 200}, {2, 1, 500}});
+        Arrays.stream(averageStanding).forEach(n -> {
+            Arrays.stream(n).forEach(i -> System.out.print(i + " " ));
+            System.out.println();
+        });
+    }
+
     public static int[][] getAverageStanding(int d, int[][] records) {
         // Create a map to store standings for each player
         Map<Integer, List<Integer>> playerStandings = new HashMap<>();
