@@ -6,7 +6,7 @@ public class readChapter {
     }
 
     // 获取读完所有章节所需的最小页面数，以确保在给定的天数内完成
-    public static int getMinPages(int[] pages, int days) {
+    public static int getMinPages(int[] pages, int limitedDays) {
         int start = 0, end = 0;
         // 找到章节中的最大页数
         for (int page : pages) {
@@ -16,17 +16,17 @@ public class readChapter {
         // 使用二分查找方法来查找最佳的阅读速度
         while (start + 1 < end) {
             int mid = start + (end - start) / 2;
-            if (getPage(pages, mid) <= days) {
+            if (getPage(pages, mid) <= limitedDays) {
                 end = mid;
             } else {
                 start = mid;
             }
         }
 
-        if (getPage(pages, start) <= days) {
+        if (getPage(pages, start) <= limitedDays) {
             return start;
         }
-        if (getPage(pages, end) <= days) {
+        if (getPage(pages, end) <= limitedDays) {
             return end;
         }
         return -1;  // 如果找不到合适的阅读速度，则返回-1
