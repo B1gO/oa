@@ -1,0 +1,34 @@
+
+// chars: n,  words: m, word : k
+// time: O(n + m * k)
+// space: O(1)
+
+class Solution {
+    public int countCharacters(String[] words, String chars) {
+        int[] cnt = new int[26];
+        for (char ch : chars.toCharArray()) {
+            cnt[ch - 'a']++;
+        }
+
+        int ans = 0;
+        for (String word : words) {
+            int[] wordCnt = new int[26];
+            for (char ch : word.toCharArray()) {
+                wordCnt[ch - 'a']++;
+            }
+
+            boolean isGood = true;
+            for (int i = 0; i < 26; i++) {
+                if (cnt[i] < wordCnt[i]) {
+                    isGood = false;
+                    break;
+                }
+            }
+
+            if (isGood) {
+                ans += word.length();
+            }
+        }
+        return ans;
+    }
+}

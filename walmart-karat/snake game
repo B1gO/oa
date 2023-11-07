@@ -1,0 +1,101 @@
+
+public class SnakeGame {
+    private static List<Set<Integer>> passablePath(char[][] board) {
+        List<Set<Integer>> res = new ArrayList<>();
+        if (board == null || board.length == 0 || board[0].length == 0) {
+            return res;
+        }
+
+        Set<Intetger> passRows = new HashSet<>();
+        Set<Integer> passCols = new HashSet<>();
+        int rows = board.length, cols = board[0].length;
+        for (int row = 0; row < rows; row++) {
+            passRows.add(row);
+        }
+
+        for (int col = 0; col < cols; col++) {
+            passCols.add(col);
+        }
+
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                if (board[row][col] == '+') {
+                    passRows.remove(row);
+                    passCols.remove(col);
+                }
+            }
+        }
+
+        res.add(passRows);
+        res.add(passCols);
+        return res;
+    }
+}
+
+//follow up
+import java.util.*;
+
+public class SnakeGameFollowup {
+    public static void main(String[] args) {
+        char[][] board1 = new char[][] {
+            {'+', '+', '+', '+', '+', '+', '+', '0', '0'},
+            {'+', '+', '0', '0', '0', '0', '0', '+', '+'},
+            {'0', '0', '0', '0', '0', '+', '+', '0', '+'},
+            {'+', '+', '0', '+', '+', '+', '+', '0', '0'},
+            {'+', '+', '0', '0', '0', '0', '0', '0', '+'},
+            {'+', '+', '0', '+', '+', '0', '+', '0', '+'}
+        };
+        char[][] board2 = new char[][] {
+            {'+', '+', '+', '+', '+', '+', '+'},
+            {'0', '0', '0', '0', '+', '0', '+'},
+            {'+', '0', '+', '0', '+', '0', '0'},
+            {'+', '0', '0', '0', '+', '+', '+'},
+            {'+', '+', '+', '+', '+', '+', '+'}
+        };
+
+        int[] enter = {5, 2};
+        int[] res = getExitPort(board1, enter);
+        System.out.println(res[0] + " " + res[1]);
+    }
+    
+    private final static int[][] DIRECTIONS = new int[][]{{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+    private static int[] getExitPort(char[][] board, int[] enter) {
+        int rows = board.length, cols = board[0].length;
+        boolean[][] visited = new boolean[rows][cols];
+        Queue<int[]> queue = new ArrayDeque<>();
+        queue.offer(enter);
+        visited[enter[0]][enter[1]] = true;
+        
+        while (!queue.isEmpty()) {
+            int[] curr = queue.poll();
+            if (!(curr[0] == enter[0] && curr[1] == enter[1]) && (curr[0] == 0 || curr[0] == rows - 1
+                || curr[1] == 0 || curr[1] == cols - 1) && board[curr[0]][curr[1]] == '0') {
+                    return curr;
+            }
+            for (int[] direction : DIRECTIONS) {
+                int nextRow = curr[0] + direction[0];
+                int nextCol = curr[1] + direction[1];
+                if (!isValid(nextRow, nextCol, board, visited)) {
+                    continue;
+                }
+                queue.offer(new int[]{nextRow, nextCol});
+                visited[nextRow][nextCol] = true;
+            }
+        }
+        
+        return new int[]{-1, -1};
+    }
+
+    private static boolean isValid(int row, int col, char[][] board, boolean[][] visited) {
+        if (row < 0 || row >= board.length || col < 0 || col >= board[0].length) {
+            return false;
+        }
+        if (visited[row][col]) {
+            return false;
+        }
+        if (board[row][col] == '+') {
+            return false;
+        }
+        return true;
+    }
+}

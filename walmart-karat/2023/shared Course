@@ -1,0 +1,48 @@
+
+
+package walmart;
+
+import java.util.*;
+
+public class sharedCourse {
+    public static void main(String[] args) {
+        Map<Integer, List<String>> students = new HashMap<>();
+        students.put(1, Arrays.asList("a", "b", "c"));
+        students.put(2, Arrays.asList("a", "d"));
+        students.put(3, Arrays.asList("f"));
+        students.put(4, Arrays.asList("a", "f", "c"));
+
+        Map<String, List<String>> result = findSharedCourse(students);
+        for (Map.Entry<String, List<String>> entry : result.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
+    }
+
+    public static Map<String, List<String>> findSharedCourse(Map<Integer, List<String>> students) {
+        Map<String, List<String>> sharedCourse = new HashMap<>();
+
+        for (Map.Entry<Integer, List<String>> entry : students.entrySet()) {
+            int studentId = entry.getKey();
+            List<String> courses = entry.getValue();
+
+            for (Map.Entry<Integer, List<String>> otherEntry : students.entrySet()) {
+                int otherId = otherEntry.getKey();
+                List<String> otherCourses = otherEntry.getValue();
+
+                if (studentId != otherId) {
+                    List<String> shared = new ArrayList<>();
+                    for (String course : courses) {
+                        if (otherCourses.contains(course)) {
+                            shared.add(course);
+                        }
+                    }
+
+                    if (!sharedCourse.containsKey(otherId + "," + studentId)) {
+                        sharedCourse.put(studentId + "," + otherId, shared);
+                    }
+                }
+            }
+        }
+        return sharedCourse;
+    }
+}
