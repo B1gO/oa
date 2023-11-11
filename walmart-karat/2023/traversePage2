@@ -1,0 +1,129 @@
+package walmart;
+
+import java.rmi.UnexpectedException;
+import java.util.*;
+
+public class traversePages2 {
+    public static void main(String[] args) {
+        int[] good_endings = { 10, 15, 25, 34 };
+        int[] bad_endings = { 21, 30, 40 };
+
+        int[][] choices1 = {
+                { 3, 16, 24 },
+        };
+        int[][] choices2 = {
+                { 3, 16, 20 },
+        };
+        int[][] choices3 = {
+                { 3, 16, 19 },
+                { 20, 2, 17 },
+        };
+        int[][] choices4 = {
+                { 3, 2, 19 },
+                { 20, 21, 34 },
+        };
+        int[][] choices5 = {};
+        int[][] choices6 = {
+                { 9, 16, 26 },
+                { 14, 16, 13 },
+                { 27, 29, 28 },
+                { 28, 15, 34 },
+                { 29, 30, 38 },
+        };
+        int[][] choices7 = {
+                { 9, 16, 26 },
+                { 13, 31, 14 },
+                { 14, 16, 13 },
+                { 27, 12, 24 },
+                { 32, 34, 15 },
+        };
+        int[][] choices8 = {
+                { 3, 9, 10 },
+        };
+        int[][] choices9 = {
+                { 3, 9, 10 },
+                { 12, 13, 14 },
+        };
+
+        /*
+         * All Test Cases - camelCase:
+         * findGoodEndings(goodEndings, badEndings, choices1) => [25]
+         * findGoodEndings(goodEndings, badEndings, choices2) => []
+         * findGoodEndings(goodEndings, badEndings, choices3) => []
+         * findGoodEndings(goodEndings, badEndings, choices4) => [34]
+         * findGoodEndings(goodEndings, badEndings, choices5) => [10]
+         * findGoodEndings(goodEndings, badEndings, choices6) => [15, 34]
+         * findGoodEndings(goodEndings, badEndings, choices7) => [15, 25, 34]
+         * findGoodEndings(goodEndings, badEndings, choices8) => [10]
+         * findGoodEndings(goodEndings, badEndings, choices9) => [10]
+         */
+
+        System.out.println(findGoodEndings(good_endings, bad_endings, choices1));
+        System.out.println(findGoodEndings(good_endings, bad_endings, choices2));
+        System.out.println(findGoodEndings(good_endings, bad_endings, choices3));
+        System.out.println(findGoodEndings(good_endings, bad_endings, choices4));
+        System.out.println(findGoodEndings(good_endings, bad_endings, choices5));
+        System.out.println(findGoodEndings(good_endings, bad_endings, choices6));
+        System.out.println(findGoodEndings(good_endings, bad_endings, choices7));
+        System.out.println(findGoodEndings(good_endings, bad_endings, choices8));
+        System.out.println(findGoodEndings(good_endings, bad_endings, choices9));
+}
+
+    public static List<Integer> findGoodEndings(int[] goodEndings, int[] badEndings, int[][] choices) {
+        Map<Integer, int[]> jump = new HashMap<>();
+        for (int[] choice : choices) {
+            int[] next = Arrays.copyOfRange(choice, 1, choice.length);
+            jump.put(choice[0], next);
+        }
+
+        Set<Integer> badSet = new HashSet<>();
+        for (int badEnding : badEndings) {
+            badSet.add(badEnding);
+        }
+
+        Set<Integer> goodSet = new HashSet<>();
+        for (int goodEnding : goodEndings) {
+            goodSet.add(goodEnding);
+        }
+
+        int maxGood = Arrays.stream(goodEndings).max().orElse(0);
+        Set<Integer> visited = new HashSet<>();
+
+        List<Integer> ans = new ArrayList<>();
+        Queue<Integer> q = new LinkedList<>();
+        q.offer(1);
+        visited.add(1);
+
+        while (!q.isEmpty()) {
+            int n = q.poll();
+
+            if (badSet.contains(n)) {
+                continue;
+            }
+
+            if (goodSet.contains(n)) {
+                ans.add(n);
+                continue;
+            }
+
+            if (jump.get(n) != null) {
+                int[] nextPages = jump.get(n);
+                for (int nextPage : nextPages) {
+                    if (!visited.contains(nextPage)) {
+                        q.offer(nextPage);
+                        visited.add(nextPage);
+                    }
+                }
+            } else {
+                if (n + 1 <= maxGood) {
+                    if (!visited.contains(n + 1)) {
+                        q.offer(n + 1);
+                        visited.add(n + 1);
+                    }
+                }
+            }
+        }
+
+        return ans;
+    }
+}

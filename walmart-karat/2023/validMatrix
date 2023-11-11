@@ -1,0 +1,27 @@
+package walmart;
+
+import java.util.HashSet;
+import java.util.Set;
+
+public class ValidMatrix {
+    public static boolean isValidMatrix(int[][] matrix) {
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+            return false;
+        }
+
+        int n = matrix.length;
+        for (int row = 0; row < n; row++) {
+            Set<Integer> rowSet = new HashSet<>();
+            Set<Integer> colSet = new HashSet<>();
+            for (int col = 0; col < n; col++) {
+                if (matrix[row][col] < 1 || matrix[row][col] > n) {
+                    return false;
+                }
+                if (!rowSet.add(matrix[row][col]) || !colSet.add(matrix[row][col])) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+}

@@ -1,47 +1,73 @@
-
 package walmart;
 
 import java.util.*;
 
-public class sharedCourse {
-    public static void main(String[] args) {
-        Map<Integer, List<String>> students = new HashMap<>();
-        students.put(1, Arrays.asList("a", "b", "c"));
-        students.put(2, Arrays.asList("a", "d"));
-        students.put(3, Arrays.asList("f"));
-        students.put(4, Arrays.asList("a", "f", "c"));
+import static java.util.Arrays.binarySearch;
 
-        Map<String, List<String>> result = findSharedCourse(students);
-        for (Map.Entry<String, List<String>> entry : result.entrySet()) {
-            System.out.println(entry.getKey() + ": " + entry.getValue());
-        }
+public class traversePages {
+    public static void main(String[] args) {
+        int[][] choices1 = {
+                {3, 16, 24},
+        };
+        int[][] choices2 = {
+                {3, 16, 20},
+        };
+        int[][] choices3 = {
+                {3, 16, 19},
+                {20, 2, 17},
+        };
+        int[][] choices4 = {
+                {3, 2, 19},
+                {20, 21, 34},
+        };
+        int[][] choices5 = {};
+        int[][] choices6 = {
+                {9, 16, 26},
+                {14, 16, 13},
+                {27, 29, 28},
+                {28, 15, 34},
+                {29, 30, 38},
+        };
+        int[][] choices7 = {
+                {9, 16, 26},
+                {13, 31, 14},
+                {14, 16, 13},
+                {27, 12, 24},
+                {32, 34, 15},
+        };
+        int[][] choices8 = {
+                {3, 9, 10},
+        };
+        int[][] choices9 = {
+                {3, 9, 10},
+                {12, 13, 14},
+        };
+
+        int[] endings1 = {5, 6, 10, 32};
+        int result1 = traverseBook(choices5, endings1, 1);
+        System.out.println("Result1: " + result1);
     }
 
-    public static Map<String, List<String>> findSharedCourse(Map<Integer, List<String>> students) {
-        Map<String, List<String>> sharedCourse = new HashMap<>();
+    public static int traverseBook(int[][] choices, int[] endings, int option) {
+        Set<Integer> visited = new HashSet<>();
+        Map<Integer, Integer> jump = new HashMap<>();
+        for (int[] choice : choices) {
+            jump.put(choice[0], choice[option]);
+        }
 
-        for (Map.Entry<Integer, List<String>> entry : students.entrySet()) {
-            int studentId = entry.getKey();
-            List<String> courses = entry.getValue();
+        int currPage = 1;
+        while (!visited.contains(currPage)) {
+            visited.add(currPage);
+            if (jump.containsKey(currPage)) {
+                currPage = jump.get(currPage);
+            } else {
+                currPage++;
+            }
 
-            for (Map.Entry<Integer, List<String>> otherEntry : students.entrySet()) {
-                int otherId = otherEntry.getKey();
-                List<String> otherCourses = otherEntry.getValue();
-
-                if (studentId != otherId) {
-                    List<String> shared = new ArrayList<>();
-                    for (String course : courses) {
-                        if (otherCourses.contains(course)) {
-                            shared.add(course);
-                        }
-                    }
-
-                    if (!sharedCourse.containsKey(otherId + "," + studentId)) {
-                        sharedCourse.put(studentId + "," + otherId, shared);
-                    }
-                }
+            if (Arrays.binarySearch(endings, currPage) >= 0) {
+                return currPage;
             }
         }
-        return sharedCourse;
+        return -1;
     }
 }

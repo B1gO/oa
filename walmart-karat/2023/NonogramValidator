@@ -1,0 +1,104 @@
+package walmart;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class NonogramValidator {
+
+    public static boolean validateNonogram(int[][] matrix, int[][] rows, int[][] cols) {
+        if (!validateRows(matrix, rows)) {
+            return false;
+        }
+        if (!validateColumns(matrix, cols)) {
+            return false;
+        }
+        return true;
+    }
+
+    private static boolean validateRows(int[][] matrix, int[][] rows) {
+        for (int i = 0; i < matrix.length; i++) {
+            if (!validateInstruction(matrix[i], rows[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean validateColumns(int[][] matrix, int[][] cols) {
+        for (int j = 0; j < matrix[0].length; j++) {
+            int[] column = new int[matrix.length];
+            for (int i = 0; i < matrix.length; i++) {
+                column[i] = matrix[i][j];
+            }
+            if (!validateInstruction(column, cols[j])) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean validateInstruction(int[] line, int[] instruction) {
+        int currZero = 0;
+        int runIdx = 0;
+
+        for (int cell : line) {
+            if (cell == 1) {
+                if (currZero > 0) {
+                    if (runIdx >= instruction.length || currZero != instruction[runIdx]) {
+                        return false;
+                    }
+                    runIdx++;
+                    currZero = 0;
+                }
+            } else {
+                currZero++;
+            }
+        }
+
+        if (currZero > 0) {
+            if (runIdx >= instruction.length || currZero != instruction[runIdx]) {
+                return false;
+            }
+            runIdx++;
+        }
+
+        return runIdx == instruction.length;
+    }
+
+    public static void main(String[] args) {
+        int[][] matrix1 = {
+            {1, 1, 1, 1},
+            {0, 1, 1, 1},
+            {0, 1, 0, 0},
+            {1, 1, 0, 1},
+            {0, 0, 1, 1}
+        };
+        int[][] rows1_1 = new int[][] {
+            {}, {1}, {1, 2}, {1}, {2}
+        };
+        int[][] columns1_1 = new int[][] {
+            {2, 1}, {1}, {2}, {1}
+        };
+
+        boolean result1_1 = validateNonogram(matrix1, rows1_1, columns1_1);
+        System.out.println(result1_1);  // Output: true
+
+        int[][] rows1_2 = new int[][] {{}, {}, {1}, {1}, {1, 1}};
+        int[][] columns1_2 = new int[][] {{2}, {1}, {2}, {1}};
+
+        boolean result1_2 = validateNonogram(matrix1, rows1_2, columns1_2);
+        System.out.println(result1_2);  // Output: false
+
+        int[][] matrix2 = {
+            {1, 1},
+            {0, 0},
+            {0, 0},
+            {1, 0}
+        };
+        int[][] rows2_1 = new int[][]{{}, {2}, {2}, {1}};
+        int[][] columns2_1 = new int[][]{{1, 1}, {3}};
+        boolean result2_1 = validateNonogram(matrix2, rows2_1, columns2_1);
+        System.out.println(result2_1);  // Output: false
+    }
+}
